@@ -28,8 +28,8 @@ PB2 :
 PB3 : 
 PB4 : 
 PB5 : 
-PB6 :
-PB7 :
+PB6 : M0PWM0
+PB7 : M0PWM1
 
 PC0 : 
 PC1 : 
@@ -74,58 +74,34 @@ PF7 :
 #include "pll.h"
 #include "systick.h"
 #include "bluetooth.h"
+#include "pwm.h"
+#include "timer.h"
+
+
+/**********************************************************/
+//extern void DisableInterrupts(void); // Disable interrupts
+//extern void EnableInterrupts(void);  // Enable interrupts
+//long StartCritical (void);    // previous I bit, disable interrupts
+//void EndCritical(long sr);    // restore I bit to previous value
+//void WaitForInterrupt(void);  // low power mode
+/**********************************************************/
+
 
 void main( void )
 {
   unsigned char aux;
   initSWLEDS();
-  initPLL();
-  initSysTickms(100);
+  initPLL();			// 80MHz
+  initSysTick( 80000 );		// 80MHz / 80 000 = 1kHz
   initUART0_80MHz_115200bps();
   initBluetooth();
-
-  while( 0 )
-  {
-     if( UART_InCharAvailable() )
-       UART_OutChar( UART_InChar() );
-     sysTickWaitBusy( 25 );
-     SETLED( BLUE );
-     Bluetooth_OutChar( 'J' );
-     sysTickWaitBusy( 25 );
-     CLRLED( BLUE );
-   
-  } 
-
- 
+  initPWM();
   while( 1 )
   {
-    if( UART_InCharAvailable() )
-      Bluetooth_OutChar( UART_InChar() );
-    if( Bluetooth_InCharAvailable() )
-      UART_OutChar ( aux = Bluetooth_InChar() );
+    while( sysTickRun(  2000 ) );  CPLLED( RED   );  
+    while( sysTickRun(  5000 ) );  CPLLED( GREEN );
+    while( sysTickRun(  3000 ) );  CPLLED( BLUE  );
   }
 
-
-
-
-  while( 1 )
-  {
-    SETLED( BLUE );
-    sysTickWaitBusy( 25 );
-    CLRLED( BLUE );
-    sysTickWaitBusy( 25 );
-  }
-
-  while( 1 )
-  {
-    if( SW1 )
-      SETLED( BLUE );
-    else
-      CLRLED( BLUE );
-     if( SW2 )
-      SETLED( RED );
-    else
-      CLRLED( RED );
-  }
 }
 

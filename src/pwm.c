@@ -9,7 +9,6 @@
 
 void IntPWM0Handler( void )
 {
-  SETLED( GREEN );
   if(PWM0_ISC_R & 0x00000001 )
   {
     PWM0_0_LOAD_R = ( (SYSTEM_CLOCK / (PWM_FREQ<<1)) - 1 );
@@ -21,15 +20,13 @@ void IntPWM0Handler( void )
 
 void initPWM( void )
 {
-  volatile unsigned long delay;
 	// 1: Enable de PWM clock
   SYSCTL_RCGC0_R |= SYSCTL_RCGC0_PWM0;
-//  delay = SYSCTL_RCGC0_R;
   SYSCTL_RCGCPWM_R |= SYSCTL_RCGCPWM_R0;
  
 	// 2: Enable clk to the appropriate GPIO module (PB6 e PB7)
   SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOB;
-//  delay = SYSCTL_RCGC2_R;
+
 	// 3: Enable de appropriate pins for their alternate function
   GPIO_PORTB_AFSEL_R |=  0x000000C0; // PB7 e PB6 
   GPIO_PORTB_ODR_R   &= ~0x000000C0;
@@ -40,21 +37,16 @@ void initPWM( void )
   GPIO_PORTB_AMSEL_R &= ~0x000000C0;
 
 	// 4: Configure the PMCn fields
-  //GPIO_PORTB_PCTL_R = (GPIO_PCTL_PB7_M0PWM1 | GPIO_PCTL_PB6_M0PWM0);
   GPIO_PORTB_PCTL_R = ((GPIO_PORTB_PCTL_R&0x00FFFFFF)|(GPIO_PCTL_PB7_M0PWM1 | GPIO_PCTL_PB6_M0PWM0));
+
 	// 5: Configure the RUN-MODE Clock Configuration
   SYSCTL_RCC_R |= (SYSCTL_RCC_USEPWMDIV | SYSCTL_RCC_PWMDIV_2);
-
-//  delay = SYSCTL_RCC_R;
-
   PWM0_CTL_R    |= PWM_CTL_GLOBALSYNC0;
   PWM0_ENABLE_R |= PWM_ENABLE_PWM0EN;
-//  PWM0_INTEN_R = 0x01;
   PWM0_ENUPD_R  |= PWM_ENUPD_ENUPD0_M;
 
  	// 6: Cfg the PWM generate for countdown mode with immediate updates
   PWM0_0_CTL_R &= ~PWM_0_CTL_ENABLE;
-
   PWM0_0_GENA_R |= PWM_0_GENA_ACTCMPAD_ZERO;
   PWM0_0_GENA_R |= PWM_0_GENA_ACTLOAD_ONE;
   PWM0_0_GENB_R |= PWM_0_GENB_ACTCMPBD_ZERO;
@@ -74,7 +66,7 @@ void initPWM( void )
 
 }	
 
-
+/*
 
 unsigned long H,L;
 void initPWM_off(void)
@@ -121,3 +113,5 @@ void dutycycle( unsigned char porcento )
   if( !L )
     L = 1;
 }
+
+*/

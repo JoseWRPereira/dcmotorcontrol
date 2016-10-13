@@ -17,6 +17,7 @@
 
 #define SETLED( n ) (*((volatile unsigned long *)(PORTF_BASE|n<<2))) = n
 #define CLRLED( n ) (*((volatile unsigned long *)(PORTF_BASE|n<<2))) = (~n)
+#define CPLLED( n ) PORTF ^= n
 
 void initSWLEDS( void );
 

@@ -25,7 +25,7 @@ O_SRCS :=
 C_SRCS := 
 S_UPPER_SRCS := 
 OBJ_SRCS := 
-ASM_SRCS := 
+ASM_SRCS :=  
 SECONDARY_SIZE := 
 OBJS := 
 C_DEPS := 
@@ -50,7 +50,9 @@ C_SRCS += \
 ../src/io.c \
 ../src/uart.c \
 ../src/uart2.c \
-../src/bluetooth.c
+../src/bluetooth.c \
+../src/pwm.c \
+../src/timer.c
 
 OBJS += \
 ./src/main.o \
@@ -61,7 +63,9 @@ OBJS += \
 ./src/io.o \
 ./src/uart.o \
 ./src/uart2.o \
-./src/bluetooth.o
+./src/bluetooth.o \
+./src/pwm.o \
+./src/timer.o
 
 C_DEPS += \
 ./src/main.d \
@@ -72,7 +76,10 @@ C_DEPS += \
 ./src/io.d \
 ./src/uart.d \
 ./src/uart2.d \
-./src/bluetooth.d
+./src/bluetooth.d \
+./src/pwm.d \
+./src/timer.d
+
 
 # Each subdirectory must supply rules for building sources it contributes
 src/%.o: ../src/%.c

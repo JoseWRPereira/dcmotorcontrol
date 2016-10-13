@@ -56,9 +56,28 @@ static uint32_t pui32Stack[128];
 //
 // External declarations for the interrupt handlers used by the application.
 
+/*
+void DisableInterrupts(void) // Disable interrupts
+{
+  __asm("        CPSID	I\n"
+	"        BX	LR");
+}
+void EnableInterrupts(void)  // Enable interrupts
+{
+  __asm("        CPSIE	I\n"
+	"        BX	LR");
+}
+//long StartCritical (void);    // previous I bit, disable interrupts
+//void EndCritical(long sr);    // restore I bit to previous value
+//void WaitForInterrupt(void);  // low power mode
+*/
 
 //*****************************************************************************
 // To be added by user
+extern void IntPWM0Handler( void );
+extern void SysTick_Handler( void );
+extern void IntT1AHandler( void );
+extern void IntT1BHandler( void );
 
 //*****************************************************************************
 //
@@ -86,18 +105,18 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // Debug monitor handler
     0,                                      // Reserved
     IntDefaultHandler,                      // The PendSV handler
-    IntDefaultHandler,                      // The SysTick handler
+    SysTick_Handler,                    // The SysTick handler
     IntDefaultHandler,                      // GPIO Port A
     IntDefaultHandler,                      // GPIO Port B
     IntDefaultHandler,                      // GPIO Port C
     IntDefaultHandler,                      // GPIO Port D
     IntDefaultHandler,                      // GPIO Port E
-	IntDefaultHandler,                      // UART0 Rx and Tx
+    IntDefaultHandler,                      // UART0 Rx and Tx
     IntDefaultHandler,                      // UART1 Rx and Tx
     IntDefaultHandler,                      // SSI0 Rx and Tx
     IntDefaultHandler,                      // I2C0 Master and Slave
     IntDefaultHandler,                      // PWM Fault
-    IntDefaultHandler,                      // PWM Generator 0
+    IntPWM0Handler,                     // PWM Generator 0
     IntDefaultHandler,                      // PWM Generator 1
     IntDefaultHandler,                      // PWM Generator 2
     IntDefaultHandler,                      // Quadrature Encoder 0
@@ -108,8 +127,8 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // Watchdog timer
     IntDefaultHandler,                      // Timer 0 subtimer A
     IntDefaultHandler,                      // Timer 0 subtimer B
-    IntDefaultHandler,                      // Timer 1 subtimer A
-    IntDefaultHandler,                      // Timer 1 subtimer B
+    IntT1AHandler,                      // Timer 1 subtimer A
+    IntT1BHandler,                      // Timer 1 subtimer B
     IntDefaultHandler,                      // Timer 2 subtimer A
     IntDefaultHandler,                      // Timer 2 subtimer B
     IntDefaultHandler,                      // Analog Comparator 0

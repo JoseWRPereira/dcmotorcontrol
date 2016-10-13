@@ -3,9 +3,8 @@
 
 #include "tm4c123gh6pm.h"
 
-void initSysTickms( unsigned long baseTempo_ms );
-void initSysTickus( unsigned long baseTempo_us );
-unsigned char sysTickRun( void );
-void sysTickWaitBusy( unsigned long time );
+void initSysTick( unsigned long baseTempo );
+unsigned long sysTickRun( unsigned long runTime );
+void SysTick_Handler( void );
 
-#endif //__SYSTICK_H__
+#endif
