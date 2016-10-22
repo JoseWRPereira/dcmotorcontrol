@@ -19,6 +19,8 @@
 #define CLRLED( n ) (*((volatile unsigned long *)(PORTF_BASE|n<<2))) = (~n)
 #define CPLLED( n ) PORTF ^= n
 
+
+extern unsigned long contaPulsos;
 void initSWLEDS( void );
 
 #endif

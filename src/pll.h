@@ -1,72 +1,49 @@
 #ifndef __PLL_H__
 #define __PLL_H__
 
-// PLL.h
-// Runs on LM4F120 or TM4C123
-// A software function to change the bus frequency using the PLL.
-// Daniel Valvano
-// May 13, 2013
+#include "tm4c123gh6pm.h" 
 
-/* This example accompanies the book
-   "Embedded Systems: Real Time Interfacing to Arm Cortex M Microcontrollers",
-   ISBN: 978-1463590154, Jonathan Valvano, copyright (c) 2013
-   Program 2.10, Figure 2.37
+#define SYSDIV2 4 
+#define SYSDIV  4
 
- Copyright 2013 by Jonathan W. Valvano, valvano@mail.utexas.edu
-    You may use, edit, run or distribute this file
-    as long as the above copyright notice remains
- THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- VALVANO SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- For more information about my classes, my research, and my books, see
- http://users.ece.utexas.edu/~valvano/
- */
-
-// The #define statement SYSDIV2 initializes
-// the PLL to the desired frequency.
-#define SYSDIV2 4
 // bus frequency is 400MHz/(SYSDIV2+1) = 400MHz/(4+1) = 80 MHz
-
-// configure the system to get its clock from the PLL
-void initPLL( void );
 void busSpeedPLL( void );
+void initPLL( void );
 
 /*
-SYSDIV2  Divisor  Clock (MHz)
- 0        1       reserved
- 1        2       reserved
- 2        3       reserved
+SYSDIV2  Divisor  Clock (MHz)  	SYSDIV	Divisor
+ 0        1       reserved	reserved
+ 1        2       reserved	reserved
+ 2        3       reserved	
  3        4       reserved
  4        5       80.000
- 5        6       66.667
+ 5        6       66.667	0x2	/3
  6        7       reserved
- 7        8       50.000
- 8        9       44.444
- 9        10      40.000
+ 7        8       50.000	0x3	/4
+ 8        9       44.444		
+ 9        10      40.000	0x4	/5
  10       11      36.364
- 11       12      33.333
+ 11       12      33.333	0x5	/6
  12       13      30.769
- 13       14      28.571
+ 13       14      28.571	0x6	/7
  14       15      26.667
- 15       16      25.000
+ 15       16      25.000	0x7	/8
  16       17      23.529
- 17       18      22.222
+ 17       18      22.222	0x8	/9
  18       19      21.053
- 19       20      20.000
+ 19       20      20.000	0x9	/10
  20       21      19.048
- 21       22      18.182
+ 21       22      18.182	0xA	/11
  22       23      17.391
- 23       24      16.667
+ 23       24      16.667	0xB	/12
  24       25      16.000
- 25       26      15.385
+ 25       26      15.385	0xC	/13
  26       27      14.815
- 27       28      14.286
+ 27       28      14.286	0xD	/14
  28       29      13.793
- 29       30      13.333
+ 29       30      13.333	0xE	/15
  30       31      12.903
- 31       32      12.500
+ 31       32      12.500	0xF	/16
  32       33      12.121
  33       34      11.765
  34       35      11.429

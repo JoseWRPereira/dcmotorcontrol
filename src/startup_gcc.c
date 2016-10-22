@@ -74,10 +74,11 @@ void EnableInterrupts(void)  // Enable interrupts
 
 //*****************************************************************************
 // To be added by user
-extern void IntPWM0Handler( void );
+extern void IntPWM0_Handler( void );
 extern void SysTick_Handler( void );
-extern void IntT1AHandler( void );
-extern void IntT1BHandler( void );
+extern void IntT1A_Handler( void );
+extern void IntT1B_Handler( void );
+extern void GPIOPortF_Handler(void);
 
 //*****************************************************************************
 //
@@ -116,7 +117,7 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // SSI0 Rx and Tx
     IntDefaultHandler,                      // I2C0 Master and Slave
     IntDefaultHandler,                      // PWM Fault
-    IntPWM0Handler,                     // PWM Generator 0
+    IntPWM0_Handler,                     // PWM Generator 0
     IntDefaultHandler,                      // PWM Generator 1
     IntDefaultHandler,                      // PWM Generator 2
     IntDefaultHandler,                      // Quadrature Encoder 0
@@ -127,8 +128,8 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // Watchdog timer
     IntDefaultHandler,                      // Timer 0 subtimer A
     IntDefaultHandler,                      // Timer 0 subtimer B
-    IntT1AHandler,                      // Timer 1 subtimer A
-    IntT1BHandler,                      // Timer 1 subtimer B
+    IntT1A_Handler,                      // Timer 1 subtimer A
+    IntT1B_Handler,                      // Timer 1 subtimer B
     IntDefaultHandler,                      // Timer 2 subtimer A
     IntDefaultHandler,                      // Timer 2 subtimer B
     IntDefaultHandler,                      // Analog Comparator 0
@@ -136,7 +137,7 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // Analog Comparator 2
     IntDefaultHandler,                      // System Control (PLL, OSC, BO)
     IntDefaultHandler,                      // FLASH Control
-    IntDefaultHandler,                      // GPIO Port F
+    GPIOPortF_Handler,                  // GPIO Port F
     IntDefaultHandler,                      // GPIO Port G
     IntDefaultHandler,                      // GPIO Port H
     IntDefaultHandler,                      // UART2 Rx and Tx

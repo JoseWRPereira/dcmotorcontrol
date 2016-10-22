@@ -319,9 +319,9 @@ char character;
   *bufPt = 0;
 }
 
-void UART_OutCRLF( void )										// Envia CR LF pela UART
+void UART_OutCRLF( void ) // Envia CR LF pela UART
 {
   UART_OutChar( CR );
-	UART_OutChar( LF );
+  UART_OutChar( LF );
 }
 

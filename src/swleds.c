@@ -1,18 +1,45 @@
 #include "swleds.h"
 
+unsigned long contaPulsos;
+
 void initSWLEDS( void )
 { 
   volatile unsigned long delay;
-  SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOF;// 1) activate clock for Port F
-  delay = SYSCTL_RCGC2_R;              // allow time for clock to start
-  GPIO_PORTF_LOCK_R = GPIO_LOCK_KEY;   // 2) unlock GPIO Port F
-  GPIO_PORTF_CR_R = 0x1F;              // allow changes to PF4-0
-  // only PF0 needs to be unlocked, other bits can't be locked
-  GPIO_PORTF_AMSEL_R = 0x00;           // 3) disable analog on PF
-  GPIO_PORTF_PCTL_R = 0x00000000;      // 4) PCTL GPIO on PF4-0
-  GPIO_PORTF_DIR_R = 0x0E;             // 5) PF4,PF0 in, PF3-1 out
-  GPIO_PORTF_AFSEL_R = 0x00;           // 6) disable alt funct on PF7-0
-  GPIO_PORTF_PUR_R = 0x11;             // enable pull-up on PF0 and PF4
-  GPIO_PORTF_DEN_R = 0x1F;             // 7) enable digital I/O on PF4-0
+  SYSCTL_RCGCGPIO_R	|= SYSCTL_RCGC2_GPIOF;
+  SYSCTL_RCGC2_R 	|= SYSCTL_RCGC2_GPIOF;
+  delay = SYSCTL_RCGC2_R;
+  GPIO_PORTF_LOCK_R	= GPIO_LOCK_KEY;	// Unlock PF[0]  
+  GPIO_PORTF_CR_R	|=  0x1F;		// Allow GPIO port F
+  GPIO_PORTF_DIR_R	&= ~0x11;		// Set Input
+  GPIO_PORTF_DIR_R	|=  0x0E;		// Set Output
+  GPIO_PORTF_AFSEL_R	&= ~0x1F;		// GPIO, Alt function off
+  GPIO_PORTF_PCTL_R	&= ~GPIO_PCTL_PF4_M;	// PF4 mask
+  GPIO_PORTF_PUR_R	|=  0x11;		// Set Pull-Up 
+  GPIO_PORTF_DEN_R	|=  0x1F;		// Digital Enable
+  GPIO_PORTF_IM_R	&= ~0x11;		// Interrupt Mask
+  GPIO_PORTF_IBE_R 	&=  0x11;		// Interrupt Both Edge
+  GPIO_PORTF_IEV_R	|=  0x11; 		// Set Rising Edge
+  GPIO_PORTF_IS_R	&= ~0x11;		// Interrupt Sense	
+  GPIO_PORTF_IM_R       |=  0x11;		// Interrupt Mask
+  GPIO_PORTF_ICR_R	|=  0x11;		// Clear Interrupt Reg
+
+  NVIC_PRI7_R		 = (NVIC_PRI7_R & 0xFF00FFFF)|0x00400000;
+  NVIC_EN0_R		 = 0x40000000; 
+}
+
+
+void GPIOPortF_Handler(void)
+{ 
+  if(GPIO_PORTF_RIS_R&0x01)
+  {  // SW2 touch
+    GPIO_PORTF_ICR_R = 0x01;  // acknowledge flag0
+    ++contaPulsos;
+  }
+  if(GPIO_PORTF_RIS_R&0x10)
+  {  // SW1 touch
+    GPIO_PORTF_ICR_R = 0x10;  // acknowledge flag4
+    CPLLED( RED ); 
+  }
+   // constant period of 1ms, variable duty cycle
 }
 

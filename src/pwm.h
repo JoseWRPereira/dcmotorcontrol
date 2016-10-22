@@ -3,10 +3,15 @@
 
 #include "tm4c123gh6pm.h"
 
+extern unsigned long dutyCycleA;
+
 void initPWM( void );
-void IntPWM0Handler( void );
-void SysTick_Handler( void );
-void dutycycle( unsigned char porcento );
+void IntPWM0_Handler( void );
+void pwmSet( unsigned long freq, unsigned long dutyc );
+void pwmStart( void );
+void pwmStop( void );
+//void SysTick_Handler( void );
+//void dutycycle( unsigned char porcento );
 
 #endif
 

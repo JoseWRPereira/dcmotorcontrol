@@ -70,13 +70,13 @@ PF7 :
 
 ********************************************************* */
 
-#include "swleds.h"
 #include "pll.h"
+#include "swleds.h"
 #include "systick.h"
+#include "uart.h"
 #include "bluetooth.h"
 #include "pwm.h"
 #include "timer.h"
-
 
 /**********************************************************/
 //extern void DisableInterrupts(void); // Disable interrupts
@@ -96,11 +96,37 @@ void main( void )
   initUART0_80MHz_115200bps();
   initBluetooth();
   initPWM();
+  initTimer(1000*80000);
+
+
   while( 1 )
   {
-    while( sysTickRun(  2000 ) );  CPLLED( RED   );  
-    while( sysTickRun(  5000 ) );  CPLLED( GREEN );
-    while( sysTickRun(  3000 ) );  CPLLED( BLUE  );
+    //while( sysTickRun(  400 ) );  CPLLED( RED );  
+    if( t1flag )
+    {
+	t1flag = 0;
+	CLRLED( RED );
+	UART_OutUDec( contaPulsos );
+	UART_OutCRLF();
+	contaPulsos = 0;
+    } 
+    if( UART_InCharAvailable()  ) 
+    {
+	aux = UART_InChar();
+	if( aux >= '0' && aux <= '9' )
+	{
+           pwmSet( 10000, (aux - '0') * 1000 );
+           pwmStart();
+        }
+        if( aux == 'P' )
+	{
+	  pwmStop();
+	}
+	if( aux == 'M' )
+	{
+	  pwmStart();
+	}
+    }
   }
 
 }
