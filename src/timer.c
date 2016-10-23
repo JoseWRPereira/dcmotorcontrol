@@ -7,7 +7,7 @@ void IntT1A_Handler( void )
 {
   TIMER1_ICR_R = TIMER_ICR_TATOCINT; 
 
-  t2flag = 1;
+  t1flag = 1;
   SETLED( RED ); 
 }
 

@@ -40,6 +40,5 @@ void GPIOPortF_Handler(void)
     GPIO_PORTF_ICR_R = 0x10;  // acknowledge flag4
     CPLLED( RED ); 
   }
-   // constant period of 1ms, variable duty cycle
 }
 

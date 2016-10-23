@@ -90,44 +90,69 @@ PF7 :
 void main( void )
 {
   unsigned char aux;
+  unsigned int  setCont=10;
+
   initSWLEDS();
   initPLL();			// 80MHz
   initSysTick( 80000 );		// 80MHz / 80 000 = 1kHz
   initUART0_80MHz_115200bps();
   initBluetooth();
   initPWM();
+  pwmStop();
   initTimer(1000*80000);
 
 
   while( 1 )
   {
-    //while( sysTickRun(  400 ) );  CPLLED( RED );  
     if( t1flag )
     {
-	t1flag = 0;
-	CLRLED( RED );
+      	t1flag = 0;
+	UART_OutUDec( setCont );
+	UART_OutChar( ' ' );
 	UART_OutUDec( contaPulsos );
+
+	if( contaPulsos < setCont )
+	{
+//	    UART_OutChar('#');
+	    aux = '9'; 
+        }
+	else
+	{
+//	    UART_OutChar('*');
+	    aux = '0';
+	}
+	
+
 	UART_OutCRLF();
 	contaPulsos = 0;
+	CLRLED( RED );
     } 
     if( UART_InCharAvailable()  ) 
     {
-	aux = UART_InChar();
-	if( aux >= '0' && aux <= '9' )
-	{
-           pwmSet( 10000, (aux - '0') * 1000 );
-           pwmStart();
-        }
-        if( aux == 'P' )
-	{
-	  pwmStop();
-	}
-	if( aux == 'M' )
-	{
-	  pwmStart();
-	}
+	unsigned char cmd = UART_InChar();
+	if( cmd >= '0' && cmd <= '9' )
+	  setCont = (cmd - '0') * 10;
+	if( !setCont )
+	  aux = '0';
+        else
+	  aux = 0;
+    }
+    switch( aux )
+    {
+   	  case '0':	
+	  case '1':     
+	  case '2':     
+	  case '3':
+	  case '4':
+	  case '5':
+	  case '6':
+	  case '7':
+	  case '8':
+	  case '9':
+          		pwmSet( 10000, (aux-'0') * 1000 );
+			pwmStart();
+			break;
     }
   }
-
 }
 

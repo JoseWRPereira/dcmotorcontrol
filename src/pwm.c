@@ -62,10 +62,10 @@ void initPWM( void )
 
 	// 8: Set the Pulse Width 25%
   //PWM0_0_CMPA_R = (((SYSTEM_CLOCK/(PWM_FREQ*2*100))*DUTY_CYCLE_A)-1);
-  PWM0_0_CMPA_R = 5000;
+  PWM0_0_CMPA_R = 1000;
         // 9: Set the Pulse Width 75%
   //PWM0_0_CMPB_R = (((SYSTEM_CLOCK/(PWM_FREQ*2*100))*DUTY_CYCLE_B)-1);
-  PWM0_0_CMPB_R = 2500;
+  PWM0_0_CMPB_R = 9000;
 	//10: Start de timers in PWM generator 0
   PWM0_0_CTL_R |= PWM_0_CTL_ENABLE;
 	//11: Enable PWM output
@@ -73,33 +73,37 @@ void initPWM( void )
   PWM0_ENABLE_R = (PWM_ENABLE_PWM0EN | PWM_ENABLE_PWM1EN);
 
 
-  NVIC_PRI2_R	= (NVIC_PRI2_R & 0xFF00FFFF)|0x00400000;
-  NVIC_EN0_R	= 0x00000400; // PWM0 Generator 0
+//  NVIC_PRI2_R	= (NVIC_PRI2_R & 0xFF00FFFF)|0x00400000;
+//  NVIC_EN0_R	= 0x00000400; // PWM0 Generator 0
 
 }	
 
 void pwmSet( unsigned long freq, unsigned long dutyc )
 {
-  if( dutyc > 10000 )
-    dutyc = 10000;
+  if( dutyc > freq )
+    dutyc = freq;
  	// 6: Cfg the PWM generate for countdown mode with immediate updates
   PWM0_0_CTL_R &= ~PWM_0_CTL_ENABLE;
 	// 7: Set the Period
   PWM0_0_COUNT_R = 0;
-  PWM0_0_LOAD_R = 10000;
-	// 8: Set the Pulse Width 25%
+  PWM0_0_LOAD_R = freq;
+	// 8: Set the Pulse
   PWM0_0_CMPA_R = dutyc;
-        // 9: Set the Pulse Width 75%
-  PWM0_0_CMPB_R = 10000-dutyc;
+        // 9: Set the Pulse 
+  PWM0_0_CMPB_R = freq-dutyc;
 }
 
 void pwmStart( void )
 {
-   PWM0_0_CTL_R |= PWM_0_CTL_ENABLE; 
+//   PWM0_ENABLE_R |= (PWM_ENABLE_PWM0EN | PWM_ENABLE_PWM1EN);
+  SETLED( BLUE );
+  PWM0_0_CTL_R |= PWM_0_CTL_ENABLE; 
 }
 
 void pwmStop( void )
 {
-   PWM0_0_CTL_R &= ~PWM_0_CTL_ENABLE;
+//   PWM0_ENABLE_R &= ~(PWM_ENABLE_PWM0EN | PWM_ENABLE_PWM1EN);
+  CLRLED( BLUE );
+  PWM0_0_CTL_R &= ~PWM_0_CTL_ENABLE;
 }
 
