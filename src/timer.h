@@ -3,12 +3,15 @@
 
 #include "tm4c123gh6pm.h"
 
-extern unsigned char t1flag, t2flag;
+
+unsigned long readT1A( void );
+void resetT1A( void );
 
 void IntT1A_Handler( void );
 void IntT1B_Handler( void );
 
 void iniTimer( void );
+
 
 #endif
 

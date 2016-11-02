@@ -19,8 +19,15 @@
 #define CLRLED( n ) (*((volatile unsigned long *)(PORTF_BASE|n<<2))) = (~n)
 #define CPLLED( n ) PORTF ^= n
 
+#define NAQUISICOES	8
+#define TAMFILA		NAQUISICOES
 
-extern unsigned long contaPulsos;
+extern unsigned long fila[TAMFILA];
+extern unsigned int indiceFila;
+extern unsigned int rps;
+extern unsigned long somaTempo;
+extern unsigned char send;
+
 void initSWLEDS( void );
 
 #endif

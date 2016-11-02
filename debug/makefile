@@ -11,7 +11,7 @@
 
 PROJECT_NAME := alvorada
 
-SERIAL:= /dev/ttyACM1
+SERIAL:= /dev/ttyACM0
 
 MAKE_ADDR := $(PWD)
 

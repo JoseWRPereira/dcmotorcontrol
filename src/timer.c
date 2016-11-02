@@ -1,20 +1,28 @@
 #include "timer.h"
 #include "swleds.h"
 
-unsigned char t1flag = 0, t2flag = 0;
 
 void IntT1A_Handler( void )
 {
   TIMER1_ICR_R = TIMER_ICR_TATOCINT; 
 
-  t1flag = 1;
-  SETLED( RED ); 
+  CPLLED( RED ); 
+}
+
+
+unsigned long readT1A( void )
+{
+  return( TIMER1_TAV_R );
+}
+void resetT1A( void )
+{
+  TIMER1_TAV_R = 1;
 }
 
 void IntT1B_Handler( void )
 {
   TIMER1_ICR_R = TIMER_ICR_TATOCINT; 
-  t2flag = 1;
+//  t2flag = 1;
 }
 
 void initTimer( unsigned long time )
@@ -30,7 +38,7 @@ void initTimer( unsigned long time )
   // 4: Optionally config.
   TIMER1_SYNC_R |= TIMER_SYNC_SYNCT1_TA;  
   // 5: Load the start value into the INTERVAL LOAD REG
-  TIMER1_TAILR_R = time;
+  TIMER1_TAILR_R = time-2;
   // 6: If interrupt are required, mask interrupt
   TIMER1_IMR_R = TIMER_IMR_TATOIM | TIMER_IMR_TBTOIM;
   // 7: Enable timer and start counting
@@ -40,4 +48,5 @@ void initTimer( unsigned long time )
   NVIC_PRI5_R	= (NVIC_PRI5_R & 0xFFFF00FF)|0x00004000;
   NVIC_EN0_R	= 0x00200000; // Timer1A
 }
+
 

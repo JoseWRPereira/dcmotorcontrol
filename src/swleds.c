@@ -1,6 +1,13 @@
 #include "swleds.h"
+#include "timer.h"
 
-unsigned long contaPulsos;
+unsigned long fila[TAMFILA];
+unsigned long somaTempo;
+unsigned long aquis;
+unsigned int indiceFila=0;
+unsigned int rps;
+
+unsigned char send = 0;
 
 void initSWLEDS( void )
 { 
@@ -33,7 +40,14 @@ void GPIOPortF_Handler(void)
   if(GPIO_PORTF_RIS_R&0x01)
   {  // SW2 touch
     GPIO_PORTF_ICR_R = 0x01;  // acknowledge flag0
-    ++contaPulsos;
+    aquis = 80000000 - readT1A();
+    resetT1A();
+    somaTempo -= fila[indiceFila];
+    fila[indiceFila] = aquis;
+    indiceFila = ((++indiceFila) % TAMFILA );
+    somaTempo += aquis;
+    if( !indiceFila )
+      send = 1;
   }
   if(GPIO_PORTF_RIS_R&0x10)
   {  // SW1 touch
