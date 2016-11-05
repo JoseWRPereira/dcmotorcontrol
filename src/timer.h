@@ -10,6 +10,9 @@ void resetT1A( void );
 void IntT1A_Handler( void );
 void IntT1B_Handler( void );
 
+void IntT2A_Handler( void );
+void IntT2B_Handler( void );
+
 void iniTimer( void );
 
 

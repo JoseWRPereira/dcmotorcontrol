@@ -18,7 +18,8 @@ void initPLL( void )
 	 	  (SYSDIV2<<(SYSCTL_RCC2_SYSDIV2_S-1));// see pll.h
 
        // wait for the PLL to lock by polling PLLLRIS
-  while((SYSCTL_RIS_R&SYSCTL_RIS_PLLLRIS)==0){};
+  while((SYSCTL_RIS_R&SYSCTL_RIS_PLLLRIS)==0)
+	;
 
   SYSCTL_RCC2_R &= ~SYSCTL_RCC2_BYPASS2;	// SYSCLK = PLL/SYSDIV2
 }

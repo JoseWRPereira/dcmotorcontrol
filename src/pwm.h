@@ -5,7 +5,7 @@
 
 extern unsigned long dutyCycleA;
 
-void initPWM( void );
+void initPWM( unsigned long freq, unsigned long dutyc );
 void IntPWM0_Handler( void );
 void pwmSet( unsigned long freq, unsigned long dutyc );
 void pwmStart( void );

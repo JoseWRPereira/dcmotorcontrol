@@ -13,8 +13,8 @@
 
 /* ************************** Uso dos Pinos em cada PORT
 
-PA0 : UART1_RX 
-PA1 : UART1_TX
+PA0 : UART0_RX 
+PA1 : UART0_TX
 PA2 :
 PA3 : 
 PA4 : 
@@ -79,29 +79,24 @@ PF7 :
 #include "timer.h"
 
 /**********************************************************/
-//extern void DisableInterrupts(void); // Disable interrupts
-//extern void EnableInterrupts(void);  // Enable interrupts
-//long StartCritical (void);    // previous I bit, disable interrupts
-//void EndCritical(long sr);    // restore I bit to previous value
-//void WaitForInterrupt(void);  // low power mode
+#define PWM_FREQ	500
+unsigned char pwmUn, pwmDz;
 /**********************************************************/
 
 
 void main( void )
 {
-  unsigned char aux, aux2;
-  unsigned int  setCont=10;
+  unsigned char aux='0';
 
+  initPLL();				// 80MHz
   initSWLEDS();
-  initPLL();			// 80MHz
-  initSysTick( 80000 );		// 80MHz / 80 000 = 1kHz
   initUART0_80MHz_115200bps();
   initBluetooth();
-  initPWM();
+  initPWM( PWM_FREQ, PWM_FREQ/10 );
   pwmStop();
-  pwmSet( 10000, (aux-'0') * 1000 );
-  initPWM();
   initTimer(1000*80000);
+  UART_OutChar('#');
+  UART_OutChar('>');
   while( 1 )
   {
     if( UART_InCharAvailable() )
@@ -110,16 +105,40 @@ void main( void )
       UART_OutChar('#');
       UART_OutChar( aux );
       UART_OutCRLF();
-      if( aux >= '0' && aux <= '9' )
+      
+      switch( aux )
       {
-        pwmSet(10000, (aux-'0') * 1000 );
-        pwmStart();
-      }	
+	case '0':  pwmUn = 0;	 	break;
+	case '1':  pwmUn = 1; 		break;
+	case '2':  pwmUn = 2;	 	break;
+	case '3':  pwmUn = 3;		break;
+	case '4':  pwmUn = 4;		break;
+	case '5':  pwmUn = 5;		break;
+	case '6':  pwmUn = 6;		break;
+	case '7':  pwmUn = 7;		break;
+	case '8':  pwmUn = 8;		break;
+	case '9':  pwmUn = 9;		break;
+	case 'q':  pwmDz = 10;	 	break;
+	case 'w':  pwmDz = 20;	 	break;
+	case 'e':  pwmDz = 30;	 	break;
+	case 'r':  pwmDz = 40;	 	break;
+	case 't':  pwmDz = 50;	 	break;
+	case 'y':  pwmDz = 60;	 	break;
+	case 'u':  pwmDz = 70;	 	break;
+	case 'i':  pwmDz = 80;	 	break;
+	case 'o':  pwmDz = 90;	 	break;
+        case 'p':  pwmDz = 0;		break;
+  	default:   pwmDz = pwmUn = 0;   break;
+
+      }
+      pwmSet(PWM_FREQ, ((int)(pwmDz+pwmUn)*PWM_FREQ)/100 );
     }
     if( send )
     {
       send = 0;
-      UART_OutUDec( somaTempo / TAMFILA  );
+      UART_OutUDec( somaTempo >> POTN2  );
+      UART_OutChar(' ');
+      UART_OutUDec( rpsB  );
       UART_OutCRLF();
     }
 

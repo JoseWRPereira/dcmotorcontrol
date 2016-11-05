@@ -78,6 +78,8 @@ extern void IntPWM0_Handler( void );
 extern void SysTick_Handler( void );
 extern void IntT1A_Handler( void );
 extern void IntT1B_Handler( void );
+extern void IntT2A_Handler( void );
+extern void IntT2B_Handler( void );
 extern void GPIOPortF_Handler( void );
 //extern void IntWT3A_Handler( void );
 
@@ -131,8 +133,8 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // Timer 0 subtimer B
     IntT1A_Handler,                      // Timer 1 subtimer A
     IntT1B_Handler,                      // Timer 1 subtimer B
-    IntDefaultHandler,                      // Timer 2 subtimer A
-    IntDefaultHandler,                      // Timer 2 subtimer B
+    IntT2A_Handler,                      // Timer 2 subtimer A
+    IntT2B_Handler,                      // Timer 2 subtimer B
     IntDefaultHandler,                      // Analog Comparator 0
     IntDefaultHandler,                      // Analog Comparator 1
     IntDefaultHandler,                      // Analog Comparator 2

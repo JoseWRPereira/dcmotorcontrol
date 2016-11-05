@@ -5,7 +5,9 @@ unsigned long fila[TAMFILA];
 unsigned long somaTempo;
 unsigned long aquis;
 unsigned int indiceFila=0;
-unsigned int rps;
+unsigned int rpsA;
+unsigned int rpsB;
+unsigned int contB;
 
 unsigned char send = 0;
 
@@ -44,10 +46,12 @@ void GPIOPortF_Handler(void)
     resetT1A();
     somaTempo -= fila[indiceFila];
     fila[indiceFila] = aquis;
-    indiceFila = ((++indiceFila) % TAMFILA );
+    //indiceFila = ((++indiceFila) % TAMFILA );
+    indiceFila = ((++indiceFila) & (TAMFILA-1) );
     somaTempo += aquis;
     if( !indiceFila )
       send = 1;
+    ++contB;     
   }
   if(GPIO_PORTF_RIS_R&0x10)
   {  // SW1 touch
