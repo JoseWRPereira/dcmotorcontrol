@@ -52,7 +52,8 @@ C_SRCS += \
 ../src/uart2.c \
 ../src/bluetooth.c \
 ../src/pwm.c \
-../src/timer.c
+../src/timer.c \
+../src/paracontrol.c
 
 OBJS += \
 ./src/main.o \
@@ -65,7 +66,8 @@ OBJS += \
 ./src/uart2.o \
 ./src/bluetooth.o \
 ./src/pwm.o \
-./src/timer.o
+./src/timer.o \
+./src/paracontrol.o
 
 C_DEPS += \
 ./src/main.d \
@@ -78,7 +80,8 @@ C_DEPS += \
 ./src/uart2.d \
 ./src/bluetooth.d \
 ./src/pwm.d \
-./src/timer.d
+./src/timer.d \
+./src/paracontrol.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

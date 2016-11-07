@@ -94,7 +94,7 @@ void main( void )
   initBluetooth();
   initPWM( PWM_FREQ, PWM_FREQ/10 );
   pwmStop();
-  initTimer(1000*80000);
+  initTimer(1000*80000, 10*80000);
   UART_OutChar('#');
   UART_OutChar('>');
   while( 1 )
@@ -133,12 +133,15 @@ void main( void )
       }
       pwmSet(PWM_FREQ, ((int)(pwmDz+pwmUn)*PWM_FREQ)/100 );
     }
-    if( send )
+    if( 0 )//send )
     {
       send = 0;
-      UART_OutUDec( somaTempo >> POTN2  );
+//      UART_OutUDec( somaTempo >> POTN2  );
+      UART_OutUDec( somaTempo );
       UART_OutChar(' ');
-      UART_OutUDec( rpsB  );
+//      UART_OutUDec( rpsB  );
+//      UART_OutChar(' ');
+      UART_OutUDec( rpsA );
       UART_OutCRLF();
     }
 

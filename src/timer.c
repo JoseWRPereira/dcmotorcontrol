@@ -2,6 +2,8 @@
 #include "swleds.h"
 
 
+unsigned long seg1;
+
 void IntT1A_Handler( void )
 {
   TIMER1_ICR_R = TIMER_ICR_TATOCINT; 
@@ -25,15 +27,21 @@ void IntT1B_Handler( void )
 void IntT2A_Handler( void )
 {
   TIMER2_ICR_R = TIMER_ICR_TATOCINT; 
-  rpsB = contB;
-  contB = 0;
+  SETLED( RED );
+  if( ++contB > seg1 )
+  {
+    addZero();
+  }
+  UART_OutUDec( rpsA );
+  UART_OutCRLF();
+  CLRLED( RED );
 } 
 void IntT2B_Handler( void )
 {
   TIMER2_ICR_R = TIMER_ICR_TBTOCINT;
 }
 
-void initTimer( unsigned long time )
+void initTimer( unsigned long time, unsigned long timeAquis )
 {
   SYSCTL_RCGCTIMER_R |= SYSCTL_RCGCTIMER_R1;
   // 1: Ensure the timer is disable
@@ -45,7 +53,7 @@ void initTimer( unsigned long time )
   // 4: Optionally config.
   TIMER1_SYNC_R |= TIMER_SYNC_SYNCT1_TA;  
   // 5: Load the start value into the INTERVAL LOAD REG
-  TIMER1_TAILR_R = time-2;
+  TIMER1_TAILR_R = 0xFFFFFFFF;//time-2;
   // 6: If interrupt are required, mask interrupt
   TIMER1_IMR_R = TIMER_IMR_TATOIM | TIMER_IMR_TBTOIM;
   // 7: Enable timer and start counting
@@ -67,7 +75,7 @@ void initTimer( unsigned long time )
   // 4: Optionally config.
   TIMER2_SYNC_R |= TIMER_SYNC_SYNCT2_TA;  
   // 5: Load the start value into the INTERVAL LOAD REG
-  TIMER2_TAILR_R = time-2;
+  TIMER2_TAILR_R = timeAquis-2;
   // 6: If interrupt are required, mask interrupt
   TIMER2_IMR_R = TIMER_IMR_TATOIM | TIMER_IMR_TBTOIM;
   // 7: Enable timer and start counting
@@ -76,6 +84,9 @@ void initTimer( unsigned long time )
 
   NVIC_PRI5_R	= (NVIC_PRI5_R & 0x00FFFFFF)|0x40000000;
   NVIC_EN0_R	= 0x00800000; // Timer2A
+
+
+  seg1 = SYSTEM_CLOCK/timeAquis;
 }
 
 

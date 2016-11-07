@@ -1,12 +1,13 @@
 #include "swleds.h"
 #include "timer.h"
+#include "uart.h"
 
 unsigned long fila[TAMFILA];
 unsigned long somaTempo;
 unsigned long aquis;
 unsigned int indiceFila=0;
-unsigned int rpsA;
-unsigned int rpsB;
+unsigned long rpsA;
+unsigned long rpsB;
 unsigned int contB;
 
 unsigned char send = 0;
@@ -34,29 +35,47 @@ void initSWLEDS( void )
 
   NVIC_PRI7_R		 = (NVIC_PRI7_R & 0xFF00FFFF)|0x00400000;
   NVIC_EN0_R		 = 0x40000000; 
+
+
+  for( indiceFila=0; indiceFila < TAMFILA; indiceFila++ )
+  {
+    fila[indiceFila] = 0;//1000001;
+    somaTempo += fila[indiceFila];
+  }
+  indiceFila = 0;
 }
 
+
+void addZero( void )
+{
+    aquis = 80000001;
+    somaTempo -= fila[indiceFila];
+    fila[indiceFila] = aquis;
+    indiceFila = ((++indiceFila) & (TAMFILA-1) );
+    somaTempo += aquis;
+    rpsA = SYSTEM_CLOCK/(somaTempo>>POTN2);
+    contB = 0;
+}
 
 void GPIOPortF_Handler(void)
 { 
   if(GPIO_PORTF_RIS_R&0x01)
   {  // SW2 touch
     GPIO_PORTF_ICR_R = 0x01;  // acknowledge flag0
-    aquis = 80000000 - readT1A();
+//    aquis = 80000000-readT1A() ;
+    aquis = (0xFFFFFFFF-readT1A())/1000 ;
     resetT1A();
     somaTempo -= fila[indiceFila];
     fila[indiceFila] = aquis;
     //indiceFila = ((++indiceFila) % TAMFILA );
     indiceFila = ((++indiceFila) & (TAMFILA-1) );
     somaTempo += aquis;
-    if( !indiceFila )
-      send = 1;
-    ++contB;     
+    rpsA = SYSTEM_CLOCK/(somaTempo>>POTN2);
+    contB = 0;
   }
   if(GPIO_PORTF_RIS_R&0x10)
   {  // SW1 touch
     GPIO_PORTF_ICR_R = 0x10;  // acknowledge flag4
-    CPLLED( RED ); 
   }
 }
 

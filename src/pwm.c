@@ -1,7 +1,6 @@
 #include "pwm.h"
 #include "swleds.h"
 
-#define SYSTEM_CLOCK 80000000
 
 
 void pwmSet( unsigned long freq, unsigned long dutyc )
