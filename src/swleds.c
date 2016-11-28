@@ -1,6 +1,10 @@
 #include "swleds.h"
 #include "timer.h"
 #include "uart.h"
+#include "paracontrol.h"
+#include "pwm.h"
+
+unsigned char habilita;
 
 unsigned long fila[TAMFILA];
 unsigned long somaTempo;
@@ -43,10 +47,11 @@ void initSWLEDS( void )
     somaTempo += fila[indiceFila];
   }
   indiceFila = 0;
+  habilita = 0;
 }
 
 
-void addZero( void )
+void addZero_off( void )
 {
     aquis = 80000001;
     somaTempo -= fila[indiceFila];
@@ -57,7 +62,7 @@ void addZero( void )
     contB = 0;
 }
 
-void GPIOPortF_Handler(void)
+void GPIOPortF_Handler_off(void)
 { 
   if(GPIO_PORTF_RIS_R&0x01)
   {  // SW2 touch
@@ -78,4 +83,62 @@ void GPIOPortF_Handler(void)
     GPIO_PORTF_ICR_R = 0x10;  // acknowledge flag4
   }
 }
+
+#define PWM_FREQ 500
+unsigned int pwmValor;
+//long setpoint;
+
+void GPIOPortF_Handler(void)
+{ 
+  long aux, mi1,mi2;
+  if(GPIO_PORTF_RIS_R&0x01)
+  {  // SW2 touch
+    GPIO_PORTF_ICR_R = 0x01;  // acknowledge flag0
+    aquis = 0xFFFFFFFF-readT1A();
+    resetT1A();
+    aquis >>= 3;
+    somaTempo -= fila[indiceFila];
+    fila[indiceFila] = aquis;
+    indiceFila = ((++indiceFila) & (TAMFILA-1) );
+    somaTempo += aquis;
+    rpsA = 100000000/aquis;
+    rpsB = 800000000/somaTempo;
+    contB = 0;
+
+ //   setpoint = 250;
+
+    if( habilita )   
+    {
+      pwmValor = controlador( 250, 900 ,rpsB ); // SP, Max, sensor
+    }
+    else
+    {
+      pwmValor = 0;
+    }
+    pwmSet(PWM_FREQ, ((int)(pwmValor)*PWM_FREQ)/100 );
+  }
+  if(GPIO_PORTF_RIS_R&0x10)
+  {  // SW1 touch
+    GPIO_PORTF_ICR_R = 0x10;  // acknowledge flag4
+  }
+}
+
+void addZero( void )
+{
+
+    aquis = 100000000;
+    aquis = 0xFFFFFFFF-readT1A();
+    resetT1A();
+    somaTempo -= fila[indiceFila];
+    fila[indiceFila] = aquis;
+    indiceFila = ((++indiceFila) & (TAMFILA-1) );
+    somaTempo += aquis;
+    rpsA = 100000000/aquis;
+    rpsB = 800000000/somaTempo;
+ 
+    contB = 0;
+
+}
+
+
 

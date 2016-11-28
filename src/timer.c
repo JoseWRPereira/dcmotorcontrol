@@ -24,6 +24,9 @@ void IntT1B_Handler( void )
   TIMER1_ICR_R = TIMER_ICR_TBTOCINT; 
 }
 
+
+//extern long erro;
+
 void IntT2A_Handler( void )
 {
   TIMER2_ICR_R = TIMER_ICR_TATOCINT; 
@@ -32,8 +35,13 @@ void IntT2A_Handler( void )
   {
     addZero();
   }
-  UART_OutUDec( rpsA );
-  UART_OutCRLF();
+  if(  rpsB > 1 )
+  {
+    UART_OutUDec( rpsB );
+//    UART_OutChar(' ');
+//    UART_OutUDec( erro );
+    UART_OutCRLF();
+  }
   CLRLED( RED );
 } 
 void IntT2B_Handler( void )

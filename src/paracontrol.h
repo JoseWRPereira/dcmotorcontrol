@@ -3,7 +3,9 @@
 
 #include "tm4c123gh6pm.h"
 
-int lpa2v( int l1, int l2 );
+long controlador( long setpoint, long max, long sensor );
+
+long lpa2v( long l1, long l2 );
 
 
 #endif

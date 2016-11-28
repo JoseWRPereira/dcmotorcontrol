@@ -23,7 +23,7 @@
 #define SYSTEM_CLOCK 	80000000
 #define SC_DIV_1MICRO   80
 
-#define POTN2		2		// max 6: 2^6 = 64
+#define POTN2		3		// max 6: 2^6 = 64
 #define NAQUISICOES 	(0x01<< POTN2)	
 #define TAMFILA		(NAQUISICOES)
 
@@ -35,6 +35,9 @@ extern unsigned char send;
 extern unsigned long aquis;
 extern unsigned long rpsB;
 extern unsigned int contB;
+extern unsigned char habilita;
+
+extern unsigned int pwmValor;
 
 void initSWLEDS( void );
 void addZero( void );
