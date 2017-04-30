@@ -77,17 +77,7 @@ PF7 :
 #include "bluetooth.h"
 #include "pwm.h"
 #include "timer.h"
-
-/**********************************************************/
-#define PWM_FREQ	500
-unsigned char pwmUn, pwmDz;
-/**********************************************************/
-
-//unsigned int pwmValor;
-//unsigned int setpoint;
-
-
-
+#include "controlador.h"
 
 
 void main( void )
@@ -98,56 +88,40 @@ void main( void )
   initSWLEDS();
   initUART0_80MHz_115200bps();
   initBluetooth();
-  initPWM( PWM_FREQ, PWM_FREQ/10 );
-  pwmStop();
+  initPWM( 500, 50 ); // FreqPWM = 500Hz, DutyCicle = 50%
+//  pwmStop();
   initTimer(1000*80000, 10*80000);
   UART_OutChar('#');
   UART_OutChar('>');
 
-  pwmUn = 5;
-  pwmDz = 20;
-  pwmSet(PWM_FREQ, ((int)(pwmDz+pwmUn)*PWM_FREQ)/100 );
+//  pwmSet(PWM_FREQ, ((int)(pwmDz+pwmUn)*PWM_FREQ)/100 );
   while( 1 )
   {
+
+    if( print )
+    {
+      print = 0;
+      SETLED( RED );
+      UART_OutUDec( rpsB/10 );
+      UART_OutChar( '.' );
+      UART_OutUDec(rpsB%10);
+      UART_OutChar( ' ' );
+      UART_OutUDec( Cout );
+      UART_OutCRLF();
+      CLRLED( RED );
+    }
     if( UART_InCharAvailable() )
     {
       aux = UART_InChar();
-      UART_OutChar('#');
-      UART_OutChar( aux );
-      UART_OutCRLF();
       
       switch( aux )
       {
-	case '0':  pwmUn = 0;	 	break;
-	case '1':  pwmUn = 1; 		break;
-	case '2':  pwmUn = 2;	 	break;
-	case '3':  pwmUn = 3;		break;
-	case '4':  pwmUn = 4;		break;
-	case '5':  pwmUn = 5;		break;
-	case '6':  pwmUn = 6;		break;
-	case '7':  pwmUn = 7;		break;
-	case '8':  pwmUn = 8;		break;
-	case '9':  pwmUn = 9;		break;
-	case 'q':  pwmDz = 10;	 	break;
-	case 'w':  pwmDz = 20;	 	break;
-	case 'e':  pwmDz = 30;	 	break;
-	case 'r':  pwmDz = 40;	 	break;
-	case 't':  pwmDz = 50;	 	break;
-	case 'y':  pwmDz = 60;	 	break;
-	case 'u':  pwmDz = 70;	 	break;
-	case 'i':  pwmDz = 80;	 	break;
-	case 'o':  pwmDz = 90;	 	break;
-        case 'p':  pwmDz = 0;		break;
- 	case ' ':  habilita = !habilita;break;
-  	default:   pwmDz = pwmUn = 0;   break;
-
+ 	case 13: // ENTER  	
+		  if( !habilita )
+		     pwmSet( PWM_FREQ, 99 );
+	          habilita = !habilita;
+		break;
       }
-//      setpoint = 250;
-
-//      pwmValor = lpa2v( setpoint, rpsA );
-
-//      pwmSet(PWM_FREQ, ((int)(pwmValor)*PWM_FREQ)/100 );
-      pwmSet(PWM_FREQ, ((int)(pwmDz+pwmUn)*PWM_FREQ)/100 );
     }
   } // while(1)
 } // void main(void)

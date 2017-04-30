@@ -5,17 +5,22 @@
 
 void pwmSet( unsigned long freq, unsigned long dutyc )
 {
-  if( dutyc >= freq )
-    dutyc = freq-1;
+  long load, cmpA, cmpB;
+
+  if( dutyc >= 100 )
+    dutyc = 99;
+
+  load = (SYSTEM_CLOCK/(freq<<3));
+  cmpA = (load * dutyc) / 100;
+  cmpB = load - cmpA;
+
  	// 6: Cfg the PWM generate for countdown mode with immediate updates
   PWM0_0_CTL_R &= ~PWM_0_CTL_ENABLE;
 	// 7: Set the Period
   PWM0_0_COUNT_R = 0;
-  PWM0_0_LOAD_R = (SYSTEM_CLOCK / (freq<<3)); // 16 bits
-	// 8: Set the Pulse
-  PWM0_0_CMPA_R = ((SYSTEM_CLOCK/(freq<<3))*dutyc)/freq;
-        // 9: Set the Pulse 
-  PWM0_0_CMPB_R = PWM0_0_LOAD_R - PWM0_0_CMPA_R;
+  PWM0_0_LOAD_R = load; // 16bits
+  PWM0_0_CMPA_R = cmpA;
+  PWM0_0_CMPB_R = cmpB;
   
   PWM0_0_CTL_R |= PWM_0_CTL_ENABLE; 
 }
@@ -77,7 +82,7 @@ void initPWM( unsigned long freq, unsigned long dutyc )
   PWM0_0_GENB_R |= PWM_0_GENB_ACTCMPBD_ZERO;
   PWM0_0_GENB_R |= PWM_0_GENB_ACTLOAD_ONE;
 
-  pwmSet( freq, dutyc ); // PWM_freq = 1kHz DutyCicle=10%
+  pwmSet( freq, dutyc ); // PWM_freq = Hz DutyCicle = %
 
 	//11: Enable PWM output
   PWM0_PP_R = (PWM_PP_GCNT_M&0x01);

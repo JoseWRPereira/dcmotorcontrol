@@ -1,0 +1,4 @@
+      pwmValor = lpa2v( setpoint, rpsA );
+
+      pwmSet(PWM_FREQ, ((int)(pwmValor)*PWM_FREQ)/100 );
+//      pwmSet(PWM_FREQ, ((int)(pwmDz+pwmUn)*PWM_FREQ)/100 );

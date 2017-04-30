@@ -4,6 +4,7 @@
 #include "tm4c123gh6pm.h"
 
 extern unsigned long seg1;
+extern unsigned char print;
 
 unsigned long readT1A( void );
 void resetT1A( void );

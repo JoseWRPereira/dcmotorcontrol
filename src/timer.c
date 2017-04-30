@@ -3,6 +3,7 @@
 
 
 unsigned long seg1;
+unsigned char print;
 
 void IntT1A_Handler( void )
 {
@@ -25,24 +26,18 @@ void IntT1B_Handler( void )
 }
 
 
-//extern long erro;
 
 void IntT2A_Handler( void )
 {
   TIMER2_ICR_R = TIMER_ICR_TATOCINT; 
-  SETLED( RED );
   if( ++contB > seg1 )
   {
     addZero();
   }
   if(  rpsB > 1 )
   {
-    UART_OutUDec( rpsB );
-//    UART_OutChar(' ');
-//    UART_OutUDec( erro );
-    UART_OutCRLF();
+    print = 1;
   }
-  CLRLED( RED );
 } 
 void IntT2B_Handler( void )
 {

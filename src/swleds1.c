@@ -1,17 +1,12 @@
 #include "swleds.h"
 #include "timer.h"
-#include "uart.h"
-#include "controlador.h"
-#include "pwm.h"
-
-unsigned char habilita;
 
 unsigned long fila[TAMFILA];
 unsigned long somaTempo;
 unsigned long aquis;
 unsigned int indiceFila=0;
-unsigned long rpsA;
-unsigned long rpsB;
+unsigned int rpsA;
+unsigned int rpsB;
 unsigned int contB;
 
 unsigned char send = 0;
@@ -41,60 +36,21 @@ void initSWLEDS( void )
   NVIC_EN0_R		 = 0x40000000; 
 
 
-  for( indiceFila=0; indiceFila < TAMFILA; indiceFila++ )
-  {
-    fila[indiceFila] = 0;//1000001;
-    somaTempo += fila[indiceFila];
-  }
+  for( indiceFila=0; indiceFila < TAMFILA; i++ )
+    fila[indiceFila] = 0;
   indiceFila = 0;
-  habilita = 0;
+  somaTempo = 0;
 }
 
-
-void addZero_off( void )
-{
-    aquis = 80000001;
-    somaTempo -= fila[indiceFila];
-    fila[indiceFila] = aquis;
-    indiceFila = ((++indiceFila) & (TAMFILA-1) );
-    somaTempo += aquis;
-    rpsA = SYSTEM_CLOCK/(somaTempo>>POTN2);
-    contB = 0;
-}
-
-void GPIOPortF_Handler_off(void)
-{ 
-  if(GPIO_PORTF_RIS_R&0x01)
-  {  // SW2 touch
-    GPIO_PORTF_ICR_R = 0x01;  // acknowledge flag0
-//    aquis = 80000000-readT1A() ;
-    aquis = (0xFFFFFFFF-readT1A())/1000 ;
-    resetT1A();
-    somaTempo -= fila[indiceFila];
-    fila[indiceFila] = aquis;
-    //indiceFila = ((++indiceFila) % TAMFILA );
-    indiceFila = ((++indiceFila) & (TAMFILA-1) );
-    somaTempo += aquis;
-    rpsA = SYSTEM_CLOCK/(somaTempo>>POTN2);
-    contB = 0;
-  }
-  if(GPIO_PORTF_RIS_R&0x10)
-  {  // SW1 touch
-    GPIO_PORTF_ICR_R = 0x10;  // acknowledge flag4
-  }
-}
 
 void addZero( void )
 {
-    aquis = 100000000;
-    aquis = 0xFFFFFFFF-readT1A();
-    resetT1A();
+    aquis = 0;
     somaTempo -= fila[indiceFila];
     fila[indiceFila] = aquis;
     indiceFila = ((++indiceFila) & (TAMFILA-1) );
     somaTempo += aquis;
-    rpsA = 100000000/aquis;
-    rpsB = 800000000/somaTempo;
+    rpsA = (10*SYSTEM_CLOCK)/(somaTempo>>POTN2);
     contB = 0;
 }
 
@@ -103,25 +59,27 @@ void GPIOPortF_Handler(void)
   if(GPIO_PORTF_RIS_R&0x01)
   {  // SW2 touch
     GPIO_PORTF_ICR_R = 0x01;  // acknowledge flag0
-    aquis = 0xFFFFFFFF-readT1A();
+SETLED( BLUE );
+    aquis = 80000000 - readT1A();
+//    if( aquis & 0x80000000 )
+//      aquis = 0;
     resetT1A();
-    aquis >>= 3;
     somaTempo -= fila[indiceFila];
     fila[indiceFila] = aquis;
+    //indiceFila = ((++indiceFila) % TAMFILA );
     indiceFila = ((++indiceFila) & (TAMFILA-1) );
     somaTempo += aquis;
-    rpsA = 100000000/aquis;
-    rpsB = 800000000/somaTempo;
-    contB = 0;
+UART_OutUDec( aquis );
+UART_OutChar(' ');
+UART_OutUDec( somaTempo);
+UART_OutCRLF();
 
-    if( habilita )   
-    {
-      pwmSet( PWM_FREQ, controlador( 250, 1000, rpsB ) );
-    }
+    if( somaTempo>>POTN2 )
+      rpsA = (10*SYSTEM_CLOCK)/(somaTempo>>POTN2);
     else
-    {
-      pwmSet( PWM_FREQ, 0 );
-    }
+      rpsA = 0;
+    contB = 0;
+CLRLED( BLUE );
   }
   if(GPIO_PORTF_RIS_R&0x10)
   {  // SW1 touch

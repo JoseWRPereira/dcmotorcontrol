@@ -3,6 +3,8 @@
 
 #include "tm4c123gh6pm.h"
 
+#define PWM_FREQ	500
+
 extern unsigned long dutyCycleA;
 
 void initPWM( unsigned long freq, unsigned long dutyc );
