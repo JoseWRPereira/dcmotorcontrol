@@ -42,6 +42,7 @@ extern unsigned int pwmValor;
 void initSWLEDS( void );
 void addZero( void );
 
+extern unsigned int setpoint;
 
 #endif
 

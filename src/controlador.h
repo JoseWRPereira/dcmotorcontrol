@@ -4,6 +4,8 @@
 #include "tm4c123gh6pm.h"
 
 extern long Cout;
+extern char limiar0, limiar1;
+extern char estado;
 
 long controlador( long setpoint, long max, long sensor );
 

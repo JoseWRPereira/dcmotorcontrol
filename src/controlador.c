@@ -8,7 +8,7 @@ long Cout;
 
 unsigned long Gcr = 100;
 unsigned long rpsAnt=0;
-long Gct, Gc, D, GcAnt=-100;
+long D, GcAnt=-100;
 long pwm1;
 
 
@@ -18,7 +18,8 @@ long pwm, pwmAlvo, erro;
 float p = 0.4;
 float i = 0.0002;
 float d = 0.0;
-float yT,rT,eT,iT,dT,uT;
+float eT,iT,dT;
+
 
 
 float raiz2( float num )
@@ -30,7 +31,115 @@ float raiz2( float num )
   return( recorre );
 }
 
+
+
+
+
+float Gc, Gct;
+
 float LPA2v( float mi, float lambda )
+{
+  if(     mi > 1.0 )     mi = 1.0;
+  if(     mi < 0.0 )     mi = 0.0;
+  if( lambda > 1.0 ) lambda = 1.0;
+  if( lambda < 0.0 ) lambda = 0.0;
+
+  Gc  =  mi-lambda;
+  Gct = (mi+lambda)-1.0;
+  return( Gct ); 
+}
+
+
+char umaVez = 0;
+float rT, uT, yT;
+long pwmA = 0, pwmB = 1000, pwmC = 0, pwmD = 0;
+long yTant;
+char limiar0 = 1, limiar1 = 0;
+char estado = 0;
+long controlador( long setpoint, long max, long sensor )
+{
+  rT = (float) setpoint / (float) max;
+  yT = (float) sensor   / (float) max;
+
+
+  switch( estado )
+  {
+    case 0: 
+            pwmA = (long)(rT * 141.42);
+    	    pwmB = (long)(rT *  70.71);
+            pwmC = 99;
+            estado = 1;
+            break;
+    case 1: 
+            if( sensor >= pwmB*10 )
+            {
+              estado = 2;
+            }
+	    break;
+    case 2: 
+            pwmA = (long)(rT * 141.42);
+            pwmB = (long)(rT *  70.71);
+	    pwmC = pwmA;
+            estado = 3;
+            break;
+    case 3: 
+	    if( sensor >= setpoint )
+            {
+              pwmC = ((pwmA + pwmB)/2);
+              estado = 4;
+            }
+    case 4:
+	   break; 
+
+    default:
+           estado = 0;
+	   break;
+  }
+
+  LPA2v( yT/(2.0*rT), pwmC/100.0 );
+  uT = pwmC;
+
+  if( uT > 99.0 )
+    uT = 99.0;
+
+  yTant = yT;
+  return( Cout = (long) uT );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+float LPA2v1( float mi, float lambda )
 {
   float Gc, Gct;
   if(     mi > 1.0 )     mi = 1.0;
@@ -77,9 +186,9 @@ float LPA2v( float mi, float lambda )
 //    return( 1.0 );
 }
 
-char umaVez = 0;
+//char umaVez = 0;
 
-long controlador( long setpoint, long max, long sensor )
+long controlador1( long setpoint, long max, long sensor )
 {
   rT = (float) setpoint / (float) max;
   yT = (float) sensor / (float) max;
@@ -100,6 +209,13 @@ long controlador( long setpoint, long max, long sensor )
 
   return( Cout = (long) uT );
 }
+
+
+
+
+
+
+
 
 long controladorPID( long setpoint, long max, long sensor )
 {

@@ -4,6 +4,7 @@
 #include "controlador.h"
 #include "pwm.h"
 
+unsigned int  setpoint;
 unsigned char habilita;
 
 unsigned long fila[TAMFILA];
@@ -116,7 +117,7 @@ void GPIOPortF_Handler(void)
 
     if( habilita )   
     {
-      pwmSet( PWM_FREQ, controlador( 250, 1000, rpsB ) );
+      pwmSet( PWM_FREQ, controlador( setpoint, 1000, rpsB ) );
     }
     else
     {

@@ -118,9 +118,21 @@ void main( void )
       {
  	case 13: // ENTER  	
 		  if( !habilita )
+                  {
 		     pwmSet( PWM_FREQ, 99 );
-	          habilita = !habilita;
+                     estado = 0;
+	          }
+                  habilita = !habilita;
 		break;
+        case '1': setpoint = 150; estado = 0; break;
+        case '2': setpoint = 250; estado = 0; break;
+        case '3': setpoint = 350; estado = 0; break;
+        case '4': setpoint = 450; estado = 0; break;
+        case '5': setpoint = 550; estado = 0; break;
+        case '6': setpoint = 650; estado = 0; break;
+        case '7': setpoint = 750; estado = 0; break;
+        case '8': setpoint = 850; estado = 0; break;
+        case '9': setpoint = 950; estado = 0; break;
       }
     }
   } // while(1)
