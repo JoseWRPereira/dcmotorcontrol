@@ -28,13 +28,13 @@
 #define TAMFILA		(NAQUISICOES)
 
 extern unsigned long fila[TAMFILA];
-extern unsigned int indiceFila;
+extern unsigned int  indiceFila;
 extern unsigned long rpsA;
 extern unsigned long somaTempo;
 extern unsigned char send;
 extern unsigned long aquis;
 extern unsigned long rpsB;
-extern unsigned int contB;
+extern unsigned int  contB;
 extern unsigned char habilita;
 
 extern unsigned int pwmValor;

@@ -117,7 +117,7 @@ void GPIOPortF_Handler(void)
 
     if( habilita )   
     {
-      pwmSet( PWM_FREQ, controlador( setpoint, 1000, rpsB ) );
+      pwmSet( PWM_FREQ, controlador( setpoint, 900, rpsB ) );
     }
     else
     {

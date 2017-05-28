@@ -74,7 +74,7 @@ PF7 :
 #include "swleds.h"
 #include "systick.h"
 #include "uart.h"
-#include "bluetooth.h"
+//#include "bluetooth.h"
 #include "pwm.h"
 #include "timer.h"
 #include "controlador.h"
@@ -87,7 +87,6 @@ void main( void )
   initPLL();				// 80MHz
   initSWLEDS();
   initUART0_80MHz_115200bps();
-  initBluetooth();
   initPWM( 500, 50 ); // FreqPWM = 500Hz, DutyCicle = 50%
 //  pwmStop();
   initTimer(1000*80000, 10*80000);

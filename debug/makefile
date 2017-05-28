@@ -50,7 +50,6 @@ C_SRCS += \
 ../src/io.c \
 ../src/uart.c \
 ../src/uart2.c \
-../src/bluetooth.c \
 ../src/pwm.c \
 ../src/timer.c \
 ../src/controlador.c
@@ -64,7 +63,6 @@ OBJS += \
 ./src/io.o \
 ./src/uart.o \
 ./src/uart2.o \
-./src/bluetooth.o \
 ./src/pwm.o \
 ./src/timer.o \
 ./src/controlador.o
@@ -78,7 +76,6 @@ C_DEPS += \
 ./src/io.d \
 ./src/uart.d \
 ./src/uart2.d \
-./src/bluetooth.d \
 ./src/pwm.d \
 ./src/timer.d \
 ./src/controlador.d 
