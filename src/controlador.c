@@ -105,7 +105,7 @@ long controlador( long setpoint, long max, long sensor )
   
   aux = (rT * 100.0);
 
-  Cout = (long)(aux + aux * Gct * 10);
+  Cout = (long)(aux + aux * Gct * 1);
   if( Cout > 99 )
     Cout = 99;
   if( Cout < 0 ) 

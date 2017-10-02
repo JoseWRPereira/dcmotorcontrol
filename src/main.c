@@ -82,6 +82,7 @@ PF7 :
 
 void main( void )
 {
+  signed int gcAux, gctAux;
   unsigned char aux='0';
 
   initPLL();				// 80MHz
@@ -99,13 +100,34 @@ void main( void )
 
     if( print )
     {
+      gcAux = (int)(Gc*1000.0);
+      gctAux = (int)(Gct*1000.0);
       print = 0;
       SETLED( RED );
       UART_OutUDec( rpsB/10 );
       UART_OutChar( '.' );
       UART_OutUDec(rpsB%10);
       UART_OutChar( ' ' );
-      UART_OutUDec( Cout );
+      UART_OutUDec( varManip );
+      UART_OutChar( ' ' );
+      UART_OutUDec( setpoint/10 );
+      UART_OutChar( ' ' );
+      if( gcAux < 0 )
+      {
+        UART_OutChar( '-' );
+        UART_OutUDec( (~gcAux)+1 );
+      }
+      else
+        UART_OutUDec( gcAux );
+
+      UART_OutChar( ' ' );
+      if( gctAux < 0 )
+      {
+        UART_OutChar('-');
+        UART_OutUDec( (~gctAux)+1);
+      }
+      else
+        UART_OutUDec( gctAux );
       UART_OutCRLF();
       CLRLED( RED );
     }

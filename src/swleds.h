@@ -43,6 +43,6 @@ void initSWLEDS( void );
 void addZero( void );
 
 extern unsigned int setpoint;
-
+extern unsigned int varManip;
 #endif
 
